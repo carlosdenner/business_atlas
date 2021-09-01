@@ -3,7 +3,12 @@
 # https://rdflib.github.io/sparqlwrapper/
 
 import sys
+from datetime import datetime
 from SPARQLWrapper import SPARQLWrapper, JSON
+import os.path
+from datetime import datetime
+import os
+import pathlib
 
 endpoint_url = "https://query.wikidata.org/sparql"
 
@@ -17,43 +22,104 @@ SELECT ?com ?comLabel ?inception ?industry ?industryLabel ?coordinate ?country W
   OPTIONAL { ?com wdt:P17 ?country. }
 }"""
 
+
 def get_results(endpoint_url, query):
-    user_agent = "WDQS-example Python/%s.%s" % (sys.version_info[0], sys.version_info[1])
+    user_agent = "Business_atlas Python/%s.%s" % (sys.version_info[0], sys.version_info[1])
     # TODO adjust user agent; see https://w.wiki/CX6
     sparql = SPARQLWrapper(endpoint_url, agent=user_agent)
     sparql.setQuery(query)
     sparql.setReturnFormat(JSON)
     return sparql.query().convert()
 
+
 results = get_results(endpoint_url, query)
 
 for result in results["results"]["bindings"]:
     print(result)
 
-#PUT THE DATA ON THE RIGHT FORMAT into pandas
+# PUT THE DATA ON THE RIGHT FORMAT into pandas
 import os
 import json
 import pandas as pd
 from pandas.io.json import json_normalize
 
 # Get the dataset, and transform string into floats for plotting
-dataFrame = pd.json_normalize(results["results"]["bindings"]) #in a serialized json-based format
-df = pd.DataFrame(dataFrame) # into pandas
-p = r'(?P<latitude>-?\d+\.\d+).*?(?P<longitude>-?\d+\.\d+)' #get lat/lon from string coordinates
+dataFrame = pd.json_normalize(results["results"]["bindings"])  # in a serialized json-based format
+df = pd.DataFrame(dataFrame)  # into pandas
+p = r'(?P<latitude>-?\d+\.\d+).*?(?P<longitude>-?\d+\.\d+)'  # get lat/lon from string coordinates
 df[['longitude', 'latitude']] = df['coordinate.value'].str.extract(p, expand=True)
 df['latitude'] = pd.to_numeric(df['latitude'], downcast='float')
 df['longitude'] = pd.to_numeric(df['longitude'], downcast='float')
-data = pd.DataFrame(df, columns = ['latitude','longitude','comLabel.value','coordinate.value', 'inception.value', 'industryLabel.value', 'com.value', 'industry.value', 'country.value','countryLabel.value'])
-data=data.dropna(subset=['latitude', 'longitude'])
-data.rename(columns={'comLabel.value':'company'}, inplace=True)
-data.rename(columns={'coordinate.value':'coordinate'}, inplace=True)
-data.rename(columns={'inception.value':'inception'}, inplace=True)
-data.rename(columns={'industryLabel.value':'industry'}, inplace=True)
-data.rename(columns={'com.value':'id'}, inplace=True)
-data.rename(columns={'industry.value':'id_industry'}, inplace=True)
-data.rename(columns={'country.value':'id_country'}, inplace=True)
-data.rename(columns={'countryLabel.value':'country'}, inplace=True)
-data = pd.DataFrame (data) #cluster maps works ONLY with dataframe
+data = pd.DataFrame(df, columns=['latitude', 'longitude', 'comLabel.value', 'coordinate.value', 'inception.value',
+                                 'industryLabel.value', 'com.value', 'industry.value', 'country.value',
+                                 'countryLabel.value'])
+data2 = pd.DataFrame(df, columns =[])
+data = data.dropna(subset=['latitude', 'longitude'])
+data.rename(columns={'comLabel.value': 'company'}, inplace=True)
+data.rename(columns={'coordinate.value': 'coordinate'}, inplace=True)
+data.rename(columns={'inception.value': 'inception'}, inplace=True)
+data.rename(columns={'industryLabel.value': 'industry'}, inplace=True)
+data.rename(columns={'com.value': 'id'}, inplace=True)
+data.rename(columns={'industry.value': 'id_industry'}, inplace=True)
+data.rename(columns={'country.value': 'id_country'}, inplace=True)
+data.rename(columns={'countryLabel.value': 'country'}, inplace=True)
+data = pd.DataFrame(data)  # cluster maps works ONLY with dataframe
+
+
+#saving hdf
+filename = 'tablehdf.h5'
+store = pd.HDFStore(filename)
+store.append('data', data)
+store.close()
+
+store = pd.HDFStore(filename)
+
+sample = store['data']
+
+print(sample)
+store.close()
+
+datahora= datetime.now()
+datetimestring = str(datahora)
+
+data.to_hdf(filename, datetimestring,  mode='a', append=True, format='table')
+
+del df    # allow df to be garbage collected
+
+
+data.to_csv()
+
 print(data.shape)
 print(data.sample(5))
 print(data.info())
+
+datahora = str(datetime.now())
+dataAlphaNum = ''.join(ch for ch in datahora if ch.isalnum())
+
+
+os.mkdir(dataAlphaNum)
+
+save_path = (dataAlphaNum)
+
+name_of_log_file = 'overview' + dataAlphaNum + 'log.txt' 
+name_of_description_file = 'description' + dataAlphaNum + '.csv'
+
+
+
+completeNameLog = os.path.join(save_path, name_of_log_file)
+completeNameDescription = os.path.join(save_path, name_of_description_file)
+
+f = open(completeNameLog, 'w')
+
+datacsv = data.info()
+print(type(datacsv))
+
+f.write(str(data.shape))
+f.write(str(data.info()))
+f.write('---')
+f.close()
+
+
+#install h5py
+
+print('ok')
