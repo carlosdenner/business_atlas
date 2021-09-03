@@ -5,6 +5,13 @@
 import sys
 from SPARQLWrapper import SPARQLWrapper, JSON
 
+import os.path
+import os
+import json
+import pandas as pd
+from pandas.io.json import json_normalize
+
+
 endpoint_url = "https://query.wikidata.org/sparql"
 
 query = """#List of `instances of` "business enterprise"
@@ -33,10 +40,7 @@ for result in results["results"]["bindings"]:
     print(result)
 
 # PUT THE DATA ON THE RIGHT FORMAT into pandas
-import os
-import json
-import pandas as pd
-from pandas.io.json import json_normalize
+
 
 # Get the dataset, and transform string into floats for plotting
 dataFrame = pd.json_normalize(results["results"]["bindings"])  # in a serialized json-based format
