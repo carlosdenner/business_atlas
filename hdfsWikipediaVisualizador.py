@@ -26,6 +26,8 @@ completeName = os.path.join(save_path, name_of_file )
 f = open(completeName, "w")
 
 #TODO Elaborar página de log
+
+
 f.write("Log será adicionado futuramente")
 f.write('\n\n\n\n')
 f.write('-------------------------------------------------------------------------------------------\n')
