@@ -11,7 +11,6 @@ import json
 import pandas as pd
 from pandas.io.json import json_normalize
 
-filename = 'tablehdf.h5'
 
 
 
@@ -28,11 +27,7 @@ f = open(completeName, "w")
 #TODO Elaborar página de log
 
 
-f.write("Log será adicionado futuramente")
-f.write('\n\n\n\n')
-f.write('-------------------------------------------------------------------------------------------\n')
- 
-f.close()
+
 df = store.select('/data')
 
 #Here's an row example:
@@ -50,13 +45,14 @@ df = store.select('/data')
 allsum = 0.0
 localHdfsDic = []
 for row in df.itertuples():
-    localHdfsDic.append({row.id: {
+    localHdfsDic.append({
+      "Id": row.id,
       "latitude" : row.latitude,
-      "longitude" : row.longitude,
-      "coordinate" : row.coordinate
-    }})
+      "longitude" : row.longitude
+    })
   
 hdfsWikipediaLocal = localHdfsDic
+
 #print("número de locais: " + str(len(localHdfsDic)))
 #df.info()
 #print(df.sample(1))
