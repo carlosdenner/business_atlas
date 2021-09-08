@@ -43,16 +43,23 @@ df = store.select('/data')
 #        id_country='http://www.wikidata.org/entity/Q38', 
 #        country=nan)
 allsum = 0.0
-localHdfsDic = []
+localHdfsWikipediaDic = []
 for row in df.itertuples():
-    localHdfsDic.append({
+    localHdfsWikipediaDic.append({
       "Id": row.id,
       "latitude" : row.latitude,
-      "longitude" : row.longitude
+      "longitude" : row.longitude,
+      "company" : row.company,
+      "coordinate" : row.coordinate,
+      "inception" : row.industry,
+      "id_industry" : row.id_industry,
+      "ind_country" : row.id_country,
+      "country" : row.country 
     })
   
-hdfsWikipediaLocal = localHdfsDic
-
+hdfsWikipediaLocal = localHdfsWikipediaDic
+print(df.info())
+print(df.shape)
 #print("número de locais: " + str(len(localHdfsDic)))
 #df.info()
-#print(df.sample(1))
+print(df.head(3))

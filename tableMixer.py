@@ -58,22 +58,22 @@ for i in range(1, len(importCsv)):
             csvLatitudeRow = csvLatitudeRow + [csvLatitudeString]
             csvLongitudeIntRow = csvLongitudeIntRow + [len(csvLongitudeString)]
             csvLongitudeRow = csvLongitudeRow + [csvLongitudeString]
-            csvIdRow = csvIdRow + csvIdString
+            csvIdRow = csvIdRow + [csvIdString]
 
     
 print('stop')
 minLatitudeDef = min(csvLatitudeIntRow)
 minLongitudeDef = min(csvLongitudeIntRow)
 idMinimoLat = csvLatitudeIntRow.index(min(csvLatitudeIntRow))
-print(idMinimoLat)
+print("idminimo latitude " + str(idMinimoLat))
 idMinimoLong = csvLongitudeIntRow.index(min(csvLongitudeIntRow))
-print(idMinimoLong)
+print("id minimo longitude " + str(idMinimoLong))
 #for i in range(1, len(importHdfs)):
 #    listHdfs = importHdfs[i]
 #    hdfslatituderow = hdfslatituderow + [listHdfs["latitude"]]
 #    hdfslongituderow = hdfslongituderow + [listHdfs["longitude"]]
 print("latitude")
-print(csvLatitudeRow[idMinimoLat], csvLongitudeRow[idMinimoLong], csvIdRow[idMinimoLong])
+print("latitude:" + csvLatitudeRow[idMinimoLat] + "||longitude: " +  csvLongitudeRow[idMinimoLong] + "|| id:" +  str(csvIdRow[idMinimoLong]))
 print("longitude")
 print(csvLongitudeRow[idMinimoLong])
 print(len(importHdfs))

@@ -82,9 +82,7 @@ data.to_hdf(filename, 'data', mode='w', format='table')
 del df    # allow df to be garbage collected
 
 
-data.to_csv()
-data.to_json()
 print(data.shape)
-print(data.sample(5))
+print(data.sample(1))
 print(data.info())
 
