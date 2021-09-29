@@ -82,7 +82,5 @@ data.to_hdf(filename, 'data', mode='w', format='table')
 del df    # allow df to be garbage collected
 
 
-print(data.shape)
-print(data.sample(1))
-print(data.info())
+
 

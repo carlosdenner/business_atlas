@@ -11,8 +11,8 @@ for row in df.itertuples():
     })
   
 csvLinkedinLocais = localcsvLinkedinDic
-#print("número de locais: " + str(len(localcsvLinkedinDic)))
-#print(df.sample(1))
+print("número de locais: " + str(len(localcsvLinkedinDic)))
+print(df.sample(1))
 
 #if((float(listCsv["latitude"]) >= 10.0000) or (float(listCsv["latitude"]) <= -10.0000)):
 #        csvlatitudestring = str(listCsv["latitude"]).replace("-", "")

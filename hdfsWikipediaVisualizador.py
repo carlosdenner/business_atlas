@@ -1,6 +1,18 @@
 import sys
 from SPARQLWrapper import SPARQLWrapper, JSON
 
+from sqlalchemy import create_engine
+from pandas.io import sql
+import re
+
+import plotly.express as px
+import plotly.io as pio
+
+import plotly.graph_objects as go
+
+
+
+
 #os allow us to manipulate dir, folders, files
 import os
 import os.path
@@ -15,12 +27,13 @@ from pandas.io.json import json_normalize
 
 
 nowRaw = datetime.now()
-now = str(nowRaw)
+nowStart = str(nowRaw)
+print("started at " + nowStart)
 
-
+print(nowStart)
 store = pd.HDFStore("tablehdfWikipedia.h5")
 save_path = './'
-name_of_file = now +"StatPreview" ".txt"
+name_of_file = nowStart +"StatPreview" ".txt"
 completeName = os.path.join(save_path, name_of_file )
 f = open(completeName, "w")
 
@@ -59,7 +72,78 @@ for row in df.itertuples():
   
 hdfsWikipediaLocal = localHdfsWikipediaDic
 print(df.info())
-print(df.shape)
+
+
+IDs=[]
+for name in df['id']:
+    ID_n = name.rsplit('/', 1)[1]
+    ID = re.findall('\d+', ID_n)
+    #print(ID[0], ID_n)
+    IDs.append(ID[0])
+df ['ID'] = IDs
+print (df['ID'].describe())
+df['ID']= df['ID'].astype(int)
+#print (data['ID'].describe())
+df.rename(columns={'id':'URL'}, inplace=True)
+df['company_foundation'] = df['inception'].str.extract(r'(\d{4})')
+pd.to_numeric(df['company_foundation'])
+df = df.set_index(['ID'])
+
+
+industries = df.dropna(subset=['id_industry'])
+#print(industries)
+
+industries.groupby('id_industry')[['company', 'country']].apply(lambda x: x.values.tolist())
+print(industries.info())
+
+industries = pd.DataFrame (industries)
+
+
+
+IDs=[]
+for name in industries['id_industry']:
+    ID_n = name.rsplit('/', 1)[1]
+    ID = re.findall('\d+', ID_n)
+#    print(ID, ID_n)
+    IDs.append(ID[0])
+    
+industries ['ID_industry'] = IDs
+industries['ID_industry']= industries['ID_industry'].astype(int)
+industries.set_index([industries.index, 'ID_industry'], inplace=True)
+industries['id_wikipedia']=industries['id_industry']
+industries.drop('id_industry', axis=1, inplace=True)  
+
+industries = pd.DataFrame(industries)
+print(industries.info())
+print(industries.sample(3))
+
+nowRaw = datetime.now()
+nowEnd = str(nowRaw)
+print("ended at " + nowEnd)
 #print("número de locais: " + str(len(localHdfsDic)))
-#df.info()
-print(df.head(3))
+
+
+#someString = df.head(1).astype(str).values.flatten().tolist()
+def listToString(listToString): 
+    
+    # initialize an empty string
+    str1 = "" 
+    
+    # traverse in the string  
+    for ele in listToString: 
+        str1 += ele  + "||"
+    
+    # return string  
+    return str1 
+
+save_path = './'
+name_of_file = nowStart + "hdfsWikipedia"+ "StatPreview" ".txt"
+completeName = os.path.join(save_path, name_of_file )
+f = open(completeName, "w")
+
+f.write("Log será adicionado futuramente\n")
+
+f.write('\n\n\n\n')
+f.write('-------------------------------------------------------------------------------------------\n')
+ 
+f.close()
