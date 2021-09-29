@@ -32,7 +32,7 @@ For more details see [GitHub Flavored Markdown](https://guides.github.com/featur
 
 ### Jekyll Themes
 
-![alt text](https://www.tshirtgeek.com.br/wp-content/uploads/2021/03/com011.jpg "Tux test")
+
 
 Your Pages site will use the layout and styles from the Jekyll theme you have selected in your [repository settings](https://github.com/carlosdenner/business_atlas/settings/pages). The name of this theme is saved in the Jekyll `_config.yml` configuration file.
 
