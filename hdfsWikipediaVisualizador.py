@@ -66,50 +66,54 @@ for row in df.itertuples():
       "coordinate" : row.coordinate,
       "inception" : row.industry,
       "id_industry" : row.id_industry,
-      "ind_country" : row.id_country,
+      "id_country" : row.id_country,
       "country" : row.country 
     })
   
 hdfsWikipediaLocal = localHdfsWikipediaDic
 print(df.info())
 
-
+namecount = 0
 IDs=[]
 for name in df['id']:
     ID_n = name.rsplit('/', 1)[1]
     ID = re.findall('\d+', ID_n)
     #print(ID[0], ID_n)
     IDs.append(ID[0])
+    namecount = namecount + 1
+print('--------------------->>>>>>>------')
+print('numero de nomes é ' + str(namecount))
 df ['ID'] = IDs
 print (df['ID'].describe())
 df['ID']= df['ID'].astype(int)
-#print (data['ID'].describe())
+
 df.rename(columns={'id':'URL'}, inplace=True)
 df['company_foundation'] = df['inception'].str.extract(r'(\d{4})')
 pd.to_numeric(df['company_foundation'])
 df = df.set_index(['ID'])
 
 
-industries = df.dropna(subset=['id_industry'])
+industries = df.dropna(subset=['latitude'])
 #print(industries)
 
-industries.groupby('id_industry')[['company', 'country']].apply(lambda x: x.values.tolist())
+industries.groupby('latitude')[['company', 'country']].apply(lambda x: x.values.tolist())
+print('latitutdes info------------->>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>')
 print(industries.info())
 
-industries = pd.DataFrame (industries)
-
+industries = pd.DataFrame(industries)
+industriescsv = industries.to_csv('./industries.csv')
 
 
 IDs=[]
-for name in industries['id_industry']:
-    ID_n = name.rsplit('/', 1)[1]
-    ID = re.findall('\d+', ID_n)
+#for name in industries['id_industry']:
+   # ID_n = name.rsplit('/', 1)[1]
+  #  ID = re.findall('\d+', ID_n)
 #    print(ID, ID_n)
-    IDs.append(ID[0])
+ #   IDs.append(ID[0])
     
-industries ['ID_industry'] = IDs
-industries['ID_industry']= industries['ID_industry'].astype(int)
-industries.set_index([industries.index, 'ID_industry'], inplace=True)
+#industries ['ID_industry'] = IDs
+#industries['ID_industry']= industries['ID_industry'].astype(int)
+#industries.set_index([industries.index, 'ID_industry'], inplace=True)
 industries['id_wikipedia']=industries['id_industry']
 industries.drop('id_industry', axis=1, inplace=True)  
 

@@ -36,8 +36,6 @@ def get_results(endpoint_url, query):
 
 results = get_results(endpoint_url, query)
 
-for result in results["results"]["bindings"]:
-    print(result)
 
 # PUT THE DATA ON THE RIGHT FORMAT into pandas
 
@@ -52,7 +50,6 @@ df['longitude'] = pd.to_numeric(df['longitude'], downcast='float')
 data = pd.DataFrame(df, columns=['latitude', 'longitude', 'comLabel.value', 'coordinate.value', 'inception.value',
                                  'industryLabel.value', 'com.value', 'industry.value', 'country.value',
                                  'countryLabel.value'])
-data2 = pd.DataFrame(df, columns =[])
 data = data.dropna(subset=['latitude', 'longitude'])
 data.rename(columns={'comLabel.value': 'company'}, inplace=True)
 data.rename(columns={'coordinate.value': 'coordinate'}, inplace=True)
@@ -74,7 +71,7 @@ store = pd.HDFStore(filename)
 
 sample = store['data']
 
-print(sample)
+
 store.close()
 
 data.to_hdf(filename, 'data', mode='w', format='table')

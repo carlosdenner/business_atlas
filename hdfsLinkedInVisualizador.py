@@ -15,7 +15,8 @@ print("op começou as " + nowStart)
 
 
 df = vaex.open('./companies-on-linkedin.csv.hdf5')
-
+csvSample = df.head(2)
+csvSample.export_csv('./head.csv')
 localHdfsLinkedInDic = []
 # Importing fields from hdfs
 
@@ -49,7 +50,7 @@ df['country'] = df["Locality"].apply(country)
 
 
 #End of filed importing
-industries = df.dropna(['Locality'])
+df = df.dropna(['Locality'])
 #Basic descriptive statistics
 print("\n Correlation between total and current number of employees: \n" + str(df.correlation("Total_employee_estimate", "Current_employee_estimate")))
 print("\n Correlation between Year_founded and current number of employees: \n" + str(df.correlation("Year_founded", "Current_employee_estimate")))
@@ -77,25 +78,25 @@ counts_x = df.count(binby=df.Year_founded, limits=years, shape=bins)
 counts_x
 
 plt.plot(np.linspace(years[0], years [1], bins), counts_x)
-plt.savefig('industries_by_year.jpg')
-
+#plt.write_html("industriesby.html")
+#plt.savefig('industries_by_year.jpg')
 print('--------------------------------------------')
-print("sample size:", df.count(), "mean # of employees:", df.mean(df["Total_employee_estimate"]))
-print("\n", df.groupby(by='Industry', agg={'mean_size': vaex.agg.mean('Current_employee_estimate'), 'max_size': vaex.agg.max('Current_employee_estimate'), }))
-print("\n", df.groupby(by='Industry').agg({'Industry': 'count','Total_employee_estimate': ['mean', 'std']}))
-dftest = df.groupby(by='Locality', agg={'Industry': 'count'})
-dftest.export_csv('./output_data.csv')
-save_path = './'
-name_of_file = "hdfsLinkedin"+ nowStart +  "StatPreview" ".txt"
-completeName = os.path.join(save_path, name_of_file )
-f = open(completeName, "w")
+#print("sample size:", df.count(), "mean # of employees:", df.mean(df["Total_employee_estimate"]))
+#print("\n", df.groupby(by='Industry', agg={'mean_size': vaex.agg.mean('Current_employee_estimate'), 'max_size': vaex.agg.max('Current_employee_estimate'), }))
+#print("\n", df.groupby(by='Industry'), agg={'Industry': 'count','Total_employee_estimate': ['mean', 'std']}, agg={'mean_size': vaex.agg.mean('Current_employee_estimate'), 'max_size': vaex.agg.max('Current_employee_estimate'), })
+dftest = df.groupby(by='Company_name', agg={'Industry': 'count','Total_employee_estimate': ['mean', 'std'], 'mean_size': vaex.agg.mean('Current_employee_estimate'), 'max_size': vaex.agg.max('Current_employee_estimate')} )
+dftest.export_csv('./nameslinkedin.csv')
+#save_path = './'
+#name_of_file = "hdfsLinkedin"+ nowStart +  "StatPreview" ".txt"
+#completeName = os.path.join(save_path, name_of_file )
+#f = open(completeName, "w")
 
-f.write("Log será adicionado futuramente\n")
+#f.write("Log será adicionado futuramente\n")
 #f.write(stringToText)
-f.write('\n\n\n\n')
-f.write('-------------------------------------------------------------------------------------------\n')
+#f.write('\n\n\n\n')
+#f.write('-------------------------------------------------------------------------------------------\n')
  
-f.close()
+#f.close()
 
 
 
