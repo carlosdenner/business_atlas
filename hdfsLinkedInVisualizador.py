@@ -21,6 +21,7 @@ localHdfsLinkedInDic = []
 # Importing fields from hdfs
 
 df["Total_employee_estimate"] = df["Total employee estimate"].astype('int')
+df["Country_Only"] = df["Country"]
 df["Current_employee_estimate"] = df["Current employee estimate"].astype('int')
 df["Year_founded"] = df["Year founded"].astype('int')
 df['lower_range'] = df["Size range"].str.slice(start=0, stop=1)
@@ -44,21 +45,40 @@ def country (locality):
     except:
         return 'None'
 
-df['city'] = df["Locality"].apply(city)
-df['estate'] = df["Locality"].apply(estate)
-df['country'] = df["Locality"].apply(country)
+#df['city'] = df["Locality"].apply(city)
+#df['estate'] = df["Locality"].apply(estate)
+#df['country'] = df["Locality"].apply(country)
 
+print('todos ind')
+print(df.count(df["Country_Only"]))
+df["CountryNotNull"] = df["Country"].str.byte_length() > 0
+print("ind com paises:")
+print(df.count(df["CountryNotNull"] == True))
+print('-.-.-.-.--.-.-.-..--------')
+df.describe()
+print("before drop country")
+describeBefore = df.describe()
+describeBefore.to_csv("./DropNacountrytestbefore.csv")
 
+df2 = df["Industry"].values
+df3 = df2.string()
+newfile = open('./dfteste.txt', "w" )
+newfile.write(df3)
+newfile.close()
+print("------>>>>>>>>>------------")
 #End of filed importing
-df = df.dropna(['Locality'])
+print("after dropping country")
+describeAfter = df.describe()
+describeAfter.to_csv("./DropNacountrytestafter.csv")
+df2.to_csv("./df2.csv")
 #Basic descriptive statistics
-print("\n Correlation between total and current number of employees: \n" + str(df.correlation("Total_employee_estimate", "Current_employee_estimate")))
-print("\n Correlation between Year_founded and current number of employees: \n" + str(df.correlation("Year_founded", "Current_employee_estimate")))
-print("\n Correlation between Year_founded and total number of employees: \n" + str(df.correlation("Year_founded", "Total_employee_estimate")))
-print("mean current employee estimate: " + str(df.mean(df["Current employee estimate"])))
-print("\n Correlation between total and Year_founded: \n" + str(df.correlation("Total_employee_estimate", "Year_founded")))
-print("\n", df.groupby(by='Locality', agg={'number of industries': 'count','Current employee estimate': ['mean', 'std']}))
-print('--------------------------------------------')
+#print("\n Correlation between total and current number of employees: \n" + str(df.correlation("Total_employee_estimate", "Current_employee_estimate")))
+#print("\n Correlation between Year_founded and current number of employees: \n" + str(df.correlation("Year_founded", "Current_employee_estimate")))
+#print("\n Correlation between Year_founded and total number of employees: \n" + str(df.correlation("Year_founded", "Total_employee_estimate")))
+#print("mean current employee estimate: " + str(df.mean(df["Current employee estimate"])))
+#print("\n Correlation between total and Year_founded: \n" + str(df.correlation("Total_employee_estimate", "Year_founded")))
+#print("\n", df.groupby(by='Locality', agg={'number of industries': 'count','Current employee estimate': ['mean', 'std']}))
+#print('--------------------------------------------')
 
 SMALL_SIZE = 12
 MEDIUM_SIZE = 14
@@ -80,12 +100,12 @@ counts_x
 plt.plot(np.linspace(years[0], years [1], bins), counts_x)
 #plt.write_html("industriesby.html")
 #plt.savefig('industries_by_year.jpg')
-print('--------------------------------------------')
+#print('--------------------------------------------')
 #print("sample size:", df.count(), "mean # of employees:", df.mean(df["Total_employee_estimate"]))
 #print("\n", df.groupby(by='Industry', agg={'mean_size': vaex.agg.mean('Current_employee_estimate'), 'max_size': vaex.agg.max('Current_employee_estimate'), }))
 #print("\n", df.groupby(by='Industry'), agg={'Industry': 'count','Total_employee_estimate': ['mean', 'std']}, agg={'mean_size': vaex.agg.mean('Current_employee_estimate'), 'max_size': vaex.agg.max('Current_employee_estimate'), })
-dftest = df.groupby(by='Company_name', agg={'Industry': 'count','Total_employee_estimate': ['mean', 'std'], 'mean_size': vaex.agg.mean('Current_employee_estimate'), 'max_size': vaex.agg.max('Current_employee_estimate')} )
-dftest.export_csv('./nameslinkedin.csv')
+dftest = df.groupby(by='Country', agg={'Industry': 'count','Total_employee_estimate': ['mean', 'std'], 'mean_size': vaex.agg.mean('Current_employee_estimate'), 'max_size': vaex.agg.max('Current_employee_estimate')} )
+dftest.export_csv('./countriesTotal.csv')
 #save_path = './'
 #name_of_file = "hdfsLinkedin"+ nowStart +  "StatPreview" ".txt"
 #completeName = os.path.join(save_path, name_of_file )

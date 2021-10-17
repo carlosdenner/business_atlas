@@ -71,8 +71,14 @@ for row in df.itertuples():
     })
   
 hdfsWikipediaLocal = localHdfsWikipediaDic
+print('Df info:')
+print('------------------------')
 print(df.info())
-
+df2 = df.dropna(subset = ['industry'])
+print('Df2 info:')
+print('------------------------')
+print(df2.info())
+print(df2['industry'])
 namecount = 0
 IDs=[]
 for name in df['id']:
