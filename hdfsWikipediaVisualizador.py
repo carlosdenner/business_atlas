@@ -10,6 +10,7 @@ import plotly.io as pio
 
 import plotly.graph_objects as go
 
+import nominatintest as nm
 
 
 
@@ -97,7 +98,12 @@ df.rename(columns={'id':'URL'}, inplace=True)
 df['company_foundation'] = df['inception'].str.extract(r'(\d{4})')
 pd.to_numeric(df['company_foundation'])
 df = df.set_index(['ID'])
+df["latitudestr"] = df["latitude"].apply(str)
+df["longitudestr"] = df["longitude"].apply(str)
+print("====================chegou aqui==================")
+df["CountryName"] = nm.location(df["latitudestr"], df["longitudestr"])
 
+df.to_csv("./wikiwithcountry.csv")
 
 industries = df.dropna(subset=['latitude'])
 #print(industries)
