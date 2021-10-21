@@ -14,7 +14,7 @@
 #Industry,Country,Total_employee_estimate_mean,Total_employee_estimate_std,
 # mean_size,max_size
 #
-#3-LinkedIncsvIndustryCountry
+#3-LinkedInH5IndustryCountry
 #
 #Company name,Company URL domain,Year founded,Industry,Size range,Locality,
 # Country,Linkedin URL,Current employee estimate,Total employee estimate,
@@ -175,12 +175,12 @@ dfInd = df[df.CountryxInd.str.len() > 0]
 print(dfInd.count())
 nowRaw = datetime.now()
 nowStart = str(nowRaw)
-dfInd.export_csv('../DataSetExtractions/LinkedIncsvIndustryCountry.csv')
-dfIndDbSize = str(os.path.getsize('../DataSetExtractions/LinkedIncsvIndustryCountry.csv'))
+dfInd.export_hdf5('../DataSetExtractions/LinkedInH5IndustryCountry.hdf5')
+dfIndDbSize = str(os.path.getsize('../DataSetExtractions/LinkedInH5IndustryCountry.hdf5'))
 log.write("\n\n\nIndustries data size: " + dfIndDbSize)
 log.write("\n# of lines in industries: " + str(dfInd.count()))
-log.write("\nLinkedIncsvIndustryCountry.csv building started at: " + nowStart)
-log.write("\nLinkedIncsvIndustryCountry.csv building endeded at: " + nowEnd)
+log.write("\nLinkedInH5IndustryCountry.hdf5 building started at: " + nowStart)
+log.write("\nLinkedInH5IndustryCountry.hdf5 building endeded at: " + nowEnd)
 
 
 
