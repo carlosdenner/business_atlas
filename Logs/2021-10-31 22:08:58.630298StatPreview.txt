@@ -1,2 +1,0 @@
-Info about dataExtraction:
-Started analysis at 2021-10-31 22:08:58.630298
