@@ -4,7 +4,7 @@
 
 import sys
 from SPARQLWrapper import SPARQLWrapper, JSON
-
+import nominatintest as nm
 import os.path
 import os
 import json

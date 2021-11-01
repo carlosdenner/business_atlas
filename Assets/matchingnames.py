@@ -109,7 +109,7 @@ f.write('linkstring abaixo:\n')
 print("")
 f.write('\n>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>\n')
 f.write('wikistring abaixo:\n')
-f = open('interseccao.py', 'w')
+f = open('interseccao.txt', 'w')
 f.write(str(interseccaoArr))
 f.close()
 

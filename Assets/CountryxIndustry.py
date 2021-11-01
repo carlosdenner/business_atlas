@@ -8,8 +8,8 @@ import csv
 
 
 print('1st break')
-dataCountries = pandas.read_csv('../DataSetExtractions/countriesTotal.csv')
-dataInd = pandas.read_csv('../DataSetExtractions/industriesTotal.csv')
+dataCountries = vaex.open('../DataSetExtractions/countriesTotal.csv')
+dataInd = vaex.open('../DataSetExtractions/industriesTotal.csv')
 datamix = vaex.open('../DataSetExtractions/LinkedInH5IndustryCountry.hdf5')
 print("second break")
 print(datamix.head(3))

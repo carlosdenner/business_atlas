@@ -16,20 +16,20 @@ import plotly.io as pio
 
 import plotly.graph_objects as go
 
-import nominatintest as nm
+
 
 
 
 #os allow us to manipulate dir, folders, files
 import os
 import os.path
-
+import vaex
 from datetime import datetime
 
 import json
 import pandas as pd
 from pandas.io.json import json_normalize
-
+import nominatintest as nm
 
 
 
@@ -38,7 +38,8 @@ nowStart = str(nowRaw)
 print("started at " + nowStart)
 
 print(nowStart)
-store = pd.HDFStore("../Databases/tablehdfWikipedia.h5")
+dfvaex = vaex.open('../Databases/tablehdfWikipedia/output_chunk-*.csv')
+df = dfvaex.to_pandas_df()
 save_path = '../Logs/'
 name_of_file = nowStart +"StatPreview" ".txt"
 completeName = os.path.join(save_path, name_of_file )
@@ -48,7 +49,7 @@ Log.write("\nStarted analysis at " + nowStart)
 
 
 
-df = store.select('/data')
+
 
 #Here's an row example:
 #Pandas(Index=70267, 
@@ -82,6 +83,7 @@ df2 = df.dropna(subset = ['industry'])
 
 
 IDs=[]
+namecount = 0
 for name in df['id']:
     ID_n = name.rsplit('/', 1)[1]
     ID = re.findall('\d+', ID_n)
@@ -99,7 +101,7 @@ pd.to_numeric(df['company_foundation'])
 df = df.set_index(['ID'])
 df["latitudestr"] = df["latitude"].apply(str)
 df["longitudestr"] = df["longitude"].apply(str)
-df["CountryName"] = nm.location(df["latitudestr"], df["longitudestr"])
+#df["CountryName"] = nm.location(df["latitudestr"], df["longitudestr"])
 
 
 

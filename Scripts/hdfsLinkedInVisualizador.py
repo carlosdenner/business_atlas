@@ -41,9 +41,9 @@ nowRaw = datetime.now()
 nowStart = str(nowRaw)
 nowBegin = nowStart
 save_path = '../Logs/'
-name_of_file = "hdfsLinkedin"+ nowStart +  "StatPreview" ".txt"
+name_of_file = "hdfsLinkedin" + "StatPreview" ".txt"
 completeName = os.path.join(save_path, name_of_file )
-log = open(completeName, "w")
+log = open(completeName, "a")
 
 log.write("Info about dataExtraction:\n")
 log.write("Started analysis at " + nowStart + "")
@@ -52,9 +52,9 @@ log.write("Started analysis at " + nowStart + "")
 print("Started analysis at " + nowStart)
 
 
-df = vaex.open('../Databases/companies-on-linkedin.csv.hdf5')
+df = vaex.open('../Databases/companiesOnLinkedin/output_chunk-*.csv')
 
-dbSize = os.path.getsize('../Databases/companies-on-linkedin.csv.hdf5')
+dbSize = os.path.getsize('../Databases/companiesOnLinkedin')
 log.write("\n\nDatabase size: " + str(dbSize))
 log.write("\n# of lines: " + str(df.count()))
 
