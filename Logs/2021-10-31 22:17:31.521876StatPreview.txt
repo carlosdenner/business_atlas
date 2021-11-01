@@ -1,0 +1,4 @@
+Info about dataExtraction:
+Started analysis at 2021-10-31 22:17:31.521876
+industries.csv.csv building started at: 2021-10-31 22:17:31.521876
+industries.csv.csv building endeded at: 2021-10-31 22:17:44.612116
