@@ -63,8 +63,13 @@ log.write("\n# of lines: " + str(df.count()))
 print("Data imported")
 df["Total_employee_estimate"] = df["Total employee estimate"].astype('int')
 df["Country_Only"] = df["Country"]
-df["Current_employee_estimate"] = df["Current employee estimate"].astype('int')
+df["Current_employee_estimate"] = df["Current employee estimate"].astype('int') 
+#some data about spain is negative, so I had to do the following to turn all negative
+#into positive
+df["Current_employee_estimate"] = ((df["Current_employee_estimate"])**2)**(0.5)
 df["Year_founded"] = df["Year founded"].astype('int')
+#filtering out invalid years
+
 df['lower_range'] = df["Size range"].str.slice(start=0, stop=1)
 df['Company_name'] = df['Company name']
 df['Company_URL_Domain'] = df['Company URL domain']
@@ -73,8 +78,16 @@ nowRaw = datetime.now()
 nowstr = str(nowRaw)
 log.write("\n\n\nColumns generated at: " + nowstr)
 print("Columns generated")
-#df.select(df.x < 0)
-
+print('começando datatime')
+datatime = df.copy(column_names=["Year_founded","Country_Only", "Industry"] )
+datatime = datatime.filter(datatime.Country_Only.str.byte_length() > 1)
+datatime = datatime.filter(datatime.Industry.str.byte_length() > 1)
+datatime = datatime.filter(datatime.Year_founded >=1500, mode="and")
+print(datatime.head(4))
+datatime.export_csv('../DataSetExtractions/timecountryindustry.csv')
+print('datatime gerado com sucesso!')
+print(df.count(df.Year_founded > 1500 and df.Year_founded))
+print('--')
 #def city (locality):
 #        try:
 #            return str(locality.split(',')[0])
@@ -96,6 +109,7 @@ print("Columns generated")
 #df['country'] = df["Locality"].apply(country)
 
 
+df["CountryNotNull"] = df["Country"].str.byte_length() > 0
 df["CountryNotNull"] = df["Country"].str.byte_length() > 0
 
 print(df.count(df["CountryNotNull"] == True))
@@ -144,7 +158,7 @@ describeAfter = df.describe()
 
 nowRaw = datetime.now()
 nowStart = str(nowRaw)
-CountriesTotal = df.groupby(by='Country', agg={'Industry': 'count','Total_employee_estimate': ['mean', 'std'], 'mean_size': vaex.agg.mean('Current_employee_estimate'), 'max_size': vaex.agg.max('Current_employee_estimate')} )
+CountriesTotal = df.groupby(by='Country', agg={'Industry': 'count', 'mean_size': vaex.agg.mean('Current_employee_estimate'), 'max_size': vaex.agg.max('Current_employee_estimate')} )
 CountriesTotal.export_csv('../DataSetExtractions/countriesTotal.csv')
 print("exported CountriesTotal")
 countriesDbSize = str(os.path.getsize('../DataSetExtractions/countriesTotal.csv'))
