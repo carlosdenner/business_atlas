@@ -10,18 +10,25 @@ from plotly.subplots import make_subplots
 from plotly.offline import download_plotlyjs, init_notebook_mode, plot, iplot
 init_notebook_mode(connected=True)
 
+dfInicial = vaex.open("../Databases/companies/output_chunk-*.csv")
+
 dfCountriesTotal = vaex.open("../DataSetExtractions/countriesTotal.csv")
 
-dfTimeCountry = vaex.open_many('../DataSetExtractions/output_chunk-*.csv')
 
-print(dfTimeCountry.describe())
+
+print("Os dados foram extraídos dos seguintes conjuntos de dados:")
+print(dfInicial.describe())
+
+print("Gerando a seguinte tabela:")
+print(dfCountriesTotal.describe())
 
 pandasDfCountriesTotal =  dfCountriesTotal.to_pandas_df()
-print("Amostra dos dados presentes no dataset:")
+print("Amostra dos dados presentes no dataset, após agruparmos as empresas por país:")
 print(dfCountriesTotal.head(3)) 
 
 print('Países com maior número total de indústrias:')
 print(pandasDfCountriesTotal.nlargest(10, 'Industry'))
+
 
 print('Países com maior tamanho médio de indústrias:')
 print(pandasDfCountriesTotal.nlargest(10, 'mean_size'))
@@ -29,11 +36,13 @@ print(pandasDfCountriesTotal.nlargest(10, 'mean_size'))
 print('Países com maior tamanho máximo de indústrias:')
 print(pandasDfCountriesTotal.nlargest(10, 'max_size'))
 
-f = open("countrylist.txt", "r")
-df_countries_from_file = f.read()
 
+#todo: prosseguir na descrição
+#
 
-df_countries = df_countries_from_file.split(',')
+DfCountriesTotal = vaex.from_pandas(df=pandasDfCountriesTotal, copy_index=True)
+df_countries = DfCountriesTotal["Country"].tolist()
+Industries = DfCountriesTotal["Industry"].tolist()
 
 
 print(type(df_countries))
@@ -42,7 +51,7 @@ print(type(df_countries))
 fig = go.Figure(data=go.Choropleth(
     locations = df_countries,
     locationmode = 'country names',
-    z = df_countries,
+    z = Industries,
     colorscale = 'Reds',
     marker_line_color = 'black',
     marker_line_width = 0.5,

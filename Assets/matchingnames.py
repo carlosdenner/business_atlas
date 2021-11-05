@@ -15,14 +15,30 @@ import pandas as pd
 nowRaw = datetime.now()
 nowStart = str(nowRaw)
 print("started at " + nowStart)
-col_list = ["Company_name"]
-df = pd.read_csv("nameslinkedin.csv", usecols=col_list)
+df = vaex.open('../Databases/companies/output_chunk-*.csv')
+print('vaex ate aqui')
+df["Company_name"] = df["Company name"]
 nomesLinkedin = df["Company_name"].tolist()
 lowerlink=[]
 
 col_list2 = ["company"]
-df2 = pd.read_csv("industries.csv", usecols=col_list2)
+df2 = vaex.open("../Databases/tablehdfWikipedia/output_chunk-*.csv", usecols=col_list2)
 nomesWiki = df2["company"].tolist()
+
+
+
+@vaex.register_function()
+def invert(x):
+    return 1/x
+    
+
+
+
+
+
+
+
+
 
 counter = 0
 nowRaw = datetime.now()
@@ -37,7 +53,8 @@ for industry in nomesWiki:
     nowRaw = datetime.now()
     wikiTime = str(nowRaw)
     ratio = counter / len(nomesWiki)
-    print('foram ' + "{:.2f}".format(ratio) + "por cento, " + str(counter) + 'registros de ' + str(len(nomesWiki)) + "as " + wikiTime + " tendo começado as " + wikiStart)
+    if(counter % 1000 == 0):
+        print('foram ' + "{:.2f}".format(ratio) + "por cento, " + str(counter) + 'registros de ' + str(len(nomesWiki)) + "as " + wikiTime + " tendo começado as " + wikiStart)
 
 
 
@@ -53,7 +70,8 @@ for industry in nomesLinkedin:
     nowRaw = datetime.now()
     linkTime = str(nowRaw)
     ratio = counter / len(nomesLinkedin)
-    print('foram ' + str(ratio) + " por cento, " + str(counter) + 'registros de ' + str(len(nomesLinkedin)) + "as " + linkTime + " tendo começado as " + linkStart)
+    if(counter % 1000 == 0):
+        print('foram ' + str(ratio) + " por cento, " + str(counter) + 'registros de ' + str(len(nomesLinkedin)) + "as " + linkTime + " tendo começado as " + linkStart)
 linkstring = ''.join(str(lowerlink))
 
 
@@ -81,7 +99,8 @@ for industry in nomesWiki:
     nowRaw = datetime.now()
     wikiTime = str(nowRaw)
     ratio = counter / len(nomesWiki)
-    print('foram ' + "{:.2f}".format(ratio) + "por cento, " + str(counter) + 'registros de ' + str(len(nomesWiki)) + "as " + linkTime)
+    if(counter % 1000 == 0):
+        print('foram ' + "{:.2f}".format(ratio) + "por cento, " + str(counter) + 'registros de ' + str(len(nomesWiki)) + "as " + linkTime)
 
 wikistring = ''.join(str(lowerwiki))
 print(wikistring)
