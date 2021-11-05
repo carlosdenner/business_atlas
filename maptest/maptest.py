@@ -2,81 +2,69 @@ import numpy as np
 import pandas as pd 
 import plotly as py
 import vaex
-import matplotlib.pyplot as plt
 import plotly.express as px
-import os
 import plotly.graph_objs as go
 from plotly.subplots import make_subplots
 from plotly.offline import download_plotlyjs, init_notebook_mode, plot, iplot
 init_notebook_mode(connected=True)
 
-df = vaex.open("../DataSetExtractions/countriesTotal.csv")
+dfVaex = vaex.open("covid_19_data.csv")
 
-pandasdf =  df.to_pandas_df()
-print("Amostra dos dados presentes no dataset:")
-print(df.head(3)) 
+df =  dfVaex.to_pandas_df()
 
-print('Países com maior número total de indústrias:')
-print(pandasdf.nlargest(10, 'Industry'))
+print(df.head(4))
 
-print('Países com maior tamanho médio de indústrias:')
-print(pandasdf.nlargest(10, 'mean_size'))
+df = df.rename(columns={'Country/Region':'Country'})
+df = df.rename(columns={'ObservationDate':'Date'})
 
-print('Países com maior tamanho máximo de indústrias:')
-print(pandasdf.nlargest(10, 'max_size'))
+print(df.head(4))
 
-f = open("countrylist.txt", "r")
-df_countries_from_file = f.read()
+df_countries = df.groupby(['Country', 'Date']).sum().reset_index().sort_values('Date', ascending=False)
+df_countries = df_countries.drop_duplicates(subset = ['Country'])
+df_countries = df_countries[df_countries['Confirmed']>0]
 
+print(df.head(4))
 
-df_countries = df_countries_from_file.split(',')
-
-
-print(type(df_countries))
-
-
+print(df_countries.head(4))
+df_countries.to_csv('dfcountries.csv')
+df.to_csv('df.csv')
 fig = go.Figure(data=go.Choropleth(
-    locations = df_countries,
+    locations = df_countries['Country'],
     locationmode = 'country names',
-    z = df_countries,
+    z = df_countries['Confirmed'],
     colorscale = 'Reds',
     marker_line_color = 'black',
     marker_line_width = 0.5,
 ))
 
-print('Exibição de um mapa:')
-fig.show()
-
-print("Impressão do mapa")
-fig.write_html(file='maostat.html')
-#fig.update_layout(
-#    title_text = 'Confirmed Cases as of March 28, 2020',
-#    title_x = 0.5,
-#    geo=dict(
-#        showframe = False,
-#        showcoastlines = False,
-#        projection_type = 'equirectangular'
-#3    )
-#)
+fig.update_layout(
+    title_text = 'Confirmed Cases as of March 28, 2020',
+    title_x = 0.5,
+    geo=dict(
+        showframe = False,
+        showcoastlines = False,
+        projection_type = 'equirectangular'
+    )
+)
 
 
-#df_countrydate = df[df['Confirmed']>0]
-#df_countrydate = df_countrydate.groupby(['Date','Country']).sum().reset_index()
-#df_countrydate
+df_countrydate = df[df['Confirmed']>0]
+df_countrydate = df_countrydate.groupby(['Date','Country']).sum().reset_index()
+df_countrydate
 
-#fig = px.choropleth(df_countrydate, 
-#                    locations="Country", 
-#                    locationmode = "country names",
-#                    color="Confirmed", 
-#                    hover_name="Country", 
-#                    animation_frame="Date"
-#                   )
-#fig.update_layout(
-#    title_text = 'Global Spread of Coronavirus',
-#    title_x = 0.5,
-#    geo=dict(
-#        showframe = False,
-#        showcoastlines = False,
-#    ))
+fig = px.choropleth(df_countrydate, 
+                    locations="Country", 
+                    locationmode = "country names",
+                    color="Confirmed", 
+                    hover_name="Country", 
+                    animation_frame="Date"
+                   )
+fig.update_layout(
+    title_text = 'Global Spread of Coronavirus',
+    title_x = 0.5,
+    geo=dict(
+        showframe = False,
+        showcoastlines = False,
+    ))
     
-#fig.show()
+fig.show()
