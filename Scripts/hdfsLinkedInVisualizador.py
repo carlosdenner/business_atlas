@@ -52,9 +52,9 @@ log.write("Started analysis at " + nowStart + "")
 print("Started analysis at " + nowStart)
 
 
-df = vaex.open('../Databases/companiesOnLinkedin/output_chunk-*.csv')
+df = vaex.open('../Databases/companies/output_chunk-*.csv')
 
-dbSize = os.path.getsize('../Databases/companiesOnLinkedin')
+dbSize = os.path.getsize('../Databases/companies')
 log.write("\n\nDatabase size: " + str(dbSize))
 log.write("\n# of lines: " + str(df.count()))
 
