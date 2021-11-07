@@ -102,10 +102,6 @@ fig.tight_layout()
 plt.show()
 
 
-
-#todo: prosseguir na descrição
-#
-
 DfCountriesTotal = vaex.from_pandas(df=pandasDfCountriesTotal, copy_index=True)
 df_countries = DfCountriesTotal["Country"].tolist()
 Industries = DfCountriesTotal["Industry"].tolist()
@@ -127,11 +123,12 @@ fig.show()
 
 print("Here we will see the same map, but removing united states and uk from the list:")
 
-usaIndex = df_countries.index("united states")
+Industries.remove(max(Industries))
 Industries.remove(max(Industries))
 Industries.remove(max(Industries))
 df_countries.remove("united states")
 df_countries.remove("united kingdom")
+df_countries.remove("canada")
 
 fig = go.Figure(data=go.Choropleth(
     locations = df_countries,
@@ -143,34 +140,3 @@ fig = go.Figure(data=go.Choropleth(
 ))
 
 fig.show()
-#fig.update_layout(
-#    title_text = 'Confirmed Cases as of March 28, 2020',
-#    title_x = 0.5,
-#    geo=dict(
-#        showframe = False,
-#        showcoastlines = False,
-#        projection_type = 'equirectangular'
-#3    )
-#)
-
-
-#df_countrydate = df[df['Confirmed']>0]
-#df_countrydate = df_countrydate.groupby(['Date','Country']).sum().reset_index()
-#df_countrydate
-
-#fig = px.choropleth(df_countrydate, 
-#                    locations="Country", 
-#                    locationmode = "country names",
-#                    color="Confirmed", 
-#                    hover_name="Country", 
-#                    animation_frame="Date"
-#                   )
-#fig.update_layout(
-#    title_text = 'Global Spread of Coronavirus',
-#    title_x = 0.5,
-#    geo=dict(
-#        showframe = False,
-#        showcoastlines = False,
-#    ))
-    
-#fig.show()
