@@ -62,7 +62,6 @@ table = vaex.from_arrays(countries = countries, mean_size = mean_size)
 print(table)
 
 print("Wich can generate the following view:")
-print(pandasDfCountriesTotal.nlargest(10, 'mean_size'))
 labels = countries
 x = np.arange(len(labels))
 width = 0.35
@@ -87,7 +86,6 @@ table = vaex.from_arrays(countries = countries, max_size = max_size)
 print(table)
 
 print("Wich can generate the following view:")
-print(pandasDfCountriesTotal.nlargest(10, 'max_size'))
 labels = countries
 x = np.arange(len(labels))
 width = 0.35
